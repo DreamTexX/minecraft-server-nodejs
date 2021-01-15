@@ -6,11 +6,12 @@ import { LoggerFactory } from './logger-factory';
 
 const logger: Logger = LoggerFactory.getLogger();
 
-async function bootstrap(): Promise<number> {
+export async function bootstrap(hostname: string, port: number) {
   logger.info('Loading base information');
+
   await PacketManager.load([
-    path.join(__dirname, 'decoders', '*.decoder.{js,ts}'),
-    path.join(__dirname, 'packets', '*.packet.{js,ts}'),
+    path.join(__dirname, 'decoders', '*.decoder.js'),
+    path.join(__dirname, 'packets', '*.packet.js'),
   ]);
 
   logger.debug(`Loaded ${PacketManager.decoder.size} decoders`);
@@ -18,16 +19,7 @@ async function bootstrap(): Promise<number> {
 
   const server = new Server();
   server.on('connection', (socket: Socket) => {
-    socket.on('data', (data: Buffer) => {});
+    socket.on('data', () => {});
   });
-  server.listen(25565, '0.0.0.0');
-  return 0;
+  server.listen(port, hostname, () => logger.info('Server started'));
 }
-
-bootstrap()
-  .then((code) => {
-    logger.info(`Started with code ${code}`);
-  })
-  .catch((err) => {
-    logger.error(err);
-  });

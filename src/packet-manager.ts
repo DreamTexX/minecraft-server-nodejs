@@ -1,5 +1,4 @@
 import { glob } from 'glob';
-import path from 'path';
 import { Logger } from 'tslog';
 import { LoggerFactory } from './logger-factory';
 
@@ -29,7 +28,7 @@ export class PacketManager {
   public static async load(paths: string[]) {
     let files: string[] = [];
     paths.forEach((path) => (files = files.concat(glob.sync(path))));
-    for (const file of files) {
+    for (let file of files) {
       await import(file);
     }
   }

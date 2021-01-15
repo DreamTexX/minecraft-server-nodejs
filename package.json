@@ -1,10 +1,15 @@
 {
   "name": "node-mc-server",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "build/main.js",
+  "main": "build/debug/cli.js",
   "scripts": {
-    "start:dev": "tsc-watch --project .  --onSuccess \"node .\""
+    "build:production": "rm -rf ./build/production && tsc --project tsconfig.production.json",
+    "build:executable": "npm run build:production && pkg -t node14-linux-x64,node14-macos-x64,node14-windows-x64 -c package.json --out-dir ./build/executables/ ./build/production/cli.js && echo Build succeed",
+    "run:debug": "NODE_ENV=development tsc-watch --project tsconfig.json  --onSuccess \"node . --debug\""
+  },
+  "pkg": {
+    "scripts": "./build/production/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -20,10 +25,11 @@
     "prettier": "^2.2.1",
     "tsc-watch": "^4.2.9",
     "tslib": "^2.1.0",
-    "typescript": "^4.1.3",
+    "typescript": "^4.1.3"
   },
   "dependencies": {
     "@types/glob": "^7.1.3",
+    "commander": "^7.0.0",
     "glob": "^7.1.6",
     "reflect-metadata": "^0.1.13",
     "tslog": "^3.0.5"
